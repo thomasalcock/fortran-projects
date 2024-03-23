@@ -9,12 +9,14 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/birthdayproblem",
-            "args": [],
+            "args": [
+                "-f", "output/results.csv", "-n_people", "30"
+            ],
             "stopAtEntry": false,
             "cwd" : "${workspaceRoot}",
             "externalConsole": false,
             "MIMode": "gdb",
-            "preLaunchTask": "build"
+            "preLaunchTask": "build debug"
         }
     ]
 }

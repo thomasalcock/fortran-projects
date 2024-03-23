@@ -1,7 +1,5 @@
 module utils
 
-    public :: has_duplicates, contains_duplicates, runif, random_integers
-
     contains
 
         function simulate_birthday_problem(n_birthdays) result(prob_same_birthday)

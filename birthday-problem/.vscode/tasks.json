@@ -4,9 +4,17 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build debug",
             "type": "shell",
             "command": "./build.sh",
+            "options": {
+                "cwd": "${workspaceRoot}"
+            }
+        },
+        {
+            "label": "build release",
+            "type": "shell",
+            "command": "./build.sh release",
             "options": {
                 "cwd": "${workspaceRoot}"
             }
