@@ -3,7 +3,10 @@
 SRC="src/*.f90"
 EXE=build/cli_test
 FLAGS="-std=f2018 -Wextra -Wall -Wconversion"
-if [ $1 = "debug" ]; then
+if [ -z $1 ]; then
+    echo "usage: ./build.sh <debug / release>"
+    exit 1
+elif [ $1 = "debug" ]; then
     FLAGS="$FLAGS -g"
 elif [ $1 = "release" ]; then
     FLAGS="$FLAGS -O3 -funit-at-a-time"
