@@ -28,6 +28,34 @@ module fortran_utils
             print *, ""
         end subroutine
 
+        subroutine get_keys_and_values(input_args, keys, values)
+            character(len=32), allocatable, intent(in) :: input_args(:)
+            character(len=32), allocatable, intent(out) :: keys(:)
+            character(len=32), allocatable, intent(out) :: values(:)
+            integer :: i, key_index, value_index, n_args
+            i = 0
+            key_index = 0
+            value_index = 0
+            n_args = size(input_args) 
+
+            allocate(keys(n_args))
+            allocate(values(n_args))
+            
+            if (.not. allocated(keys) .or. .not. allocated(values)) then
+                error stop "Error during allocation for keys and values"
+            end if
+
+            do i = 1, n_args
+                if (mod(i, 2) /= 0) then
+                    key_index = key_index + 1
+                    keys(key_index) = input_args(i)
+                else 
+                    value_index = value_index + 1
+                    values(value_index) = input_args(i)
+                end if
+            end do
+        end subroutine
+
         subroutine parse_input_args(input_args, filepath, number)
             character(len=32), allocatable, intent(in) :: input_args(:)
             character(len=65), parameter :: error_message = "usage: ./cli_test --filepath <path to file> -n <positive integer>"
@@ -35,11 +63,7 @@ module fortran_utils
             
             integer(kind=int32) :: number
             character(len=32), intent(out) :: filepath
-
-            if (size(input_args) == 0) then
-                error stop error_message
-            end if
-
+        
             do i = 1, size(input_args), 2
                 if (input_args(i) == "-f") then 
                     if (i + 1 <= size(input_args)) then
@@ -90,5 +114,7 @@ module fortran_utils
                 args(arg_index) = arg
                 arg_index = arg_index + 1
             end do
+
+            !deallocate(args)
         end subroutine 
 end module
