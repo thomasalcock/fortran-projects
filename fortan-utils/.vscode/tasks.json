@@ -22,7 +22,7 @@
         {
             "label": "run debug",
             "type": "shell",
-            "command": "./build/cli_test --filepath output/test.csv -n 30",
+            "command": "./build/fortran_utils_test --filepath output/test.csv -n 30",
             "options": {
                 "cwd": "${workspaceRoot}"
             }

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SRC="src/*.f90"
-EXE=build/cli_test
+EXE=build/fortran_utils_test
 FLAGS="-std=f2018 -Wextra -Wall -Wconversion"
 if [ -z $1 ]; then
     echo "usage: ./build.sh <debug / release>"

@@ -8,7 +8,7 @@
             "name": "run gdb",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/build/cli_test",
+            "program": "${workspaceRoot}/build/fortran_utils_test",
             "args": [
                 "--filepath", "output/results.csv", "--number", "30"
             ],
