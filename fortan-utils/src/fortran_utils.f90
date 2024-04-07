@@ -31,33 +31,35 @@ module fortran_utils
         subroutine parse_input_args(input_args, filepath, number)
             character(len=32), allocatable, intent(in) :: input_args(:)
             character(len=65), parameter :: error_message = "usage: ./cli_test --filepath <path to file> -n <positive integer>"
-            integer(kind=int32) :: err
-            integer(kind=int32) :: i
+            integer(kind=int32) :: err, i
+            
             integer(kind=int32) :: number
             character(len=32), intent(out) :: filepath
 
+            if (size(input_args) == 0) then
+                error stop error_message
+            end if
+
             do i = 1, size(input_args), 2
-                select case (input_args(i))
-                    case ("--filepath", "-f")
-                        if (i + 1 <= size(input_args)) then
-                            read(input_args(i+1), *, iostat=err) filepath
-                            if (err /= 0)  then
-                                error stop "Error reading -f / --filepath"
-                            end if
+                if (input_args(i) == "-f") then 
+                    if (i + 1 <= size(input_args)) then
+                        read(input_args(i+1), *, iostat=err) filepath
+                        if (err /= 0)  then
+                            error stop "Error reading -f / --filepath"
                         end if
-                    case ("--number", "-n")
-                        if (i + 1 <= size(input_args)) then
-                            read(input_args(i+1),*, iostat=err) number
-                            if (err /= 0)  then
-                                error stop "Error reading -n / --number"
-                            end if    
+                    end if
+                else if (input_args(i) == "-n") then
+                    if (i + 1 <= size(input_args)) then
+                        read(input_args(i+1),*, iostat=err) number
+                        if (err /= 0)  then
+                            error stop "Error reading -n / --number"
                         end if
-                    case default
-                        print *, error_message
-                        exit
-                end select
+                    end if
+                else
+                    error stop error_message
+                end if
             end do
-        end 
+        end subroutine
 
         subroutine print_args(args)
             integer :: i
