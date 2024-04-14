@@ -5,7 +5,7 @@ program linear_regression_gd
     
     integer n, i
     real :: x(100000)
-    real :: y(100000), predictions(100000)
+    real :: y(100000), predictions(100000), temp(100000)
     real :: beta, alpha, beta_est, alpha_est, cost, rmse, mse, grad_alpha, grad_beta, learning_rate
     real :: beta_diff, alpha_diff, threshold
     
@@ -25,10 +25,12 @@ program linear_regression_gd
     alpha_diff = abs(alpha - alpha_est)
 
     do while (beta_diff > threshold .or. alpha_diff > threshold)
-        cost = (1.0 / 2 * n) * sum((alpha_est + beta_est * x - y)**2)
         
-        grad_alpha = (1.0 / n) * sum((alpha_est + beta_est * x - y))
-        grad_beta = (1.0 / n) * sum((alpha_est + beta_est * x - y) * x)
+        temp = alpha_est + beta_est * x - y
+        cost = (1.0 / 2 * n) * sum(temp**2)
+        
+        grad_alpha = (1.0 / n) * sum(temp)
+        grad_beta = (1.0 / n) * sum(temp * x)
         
         alpha_est = alpha_est - learning_rate * grad_alpha
         beta_est = beta_est - learning_rate * grad_beta
