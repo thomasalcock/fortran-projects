@@ -32,6 +32,7 @@ module fortran_utils
             character(len=32), allocatable, intent(in) :: input_args(:)
             character(len=32), allocatable, intent(out) :: keys(:)
             character(len=32), allocatable, intent(out) :: values(:)
+            character(len=32) :: key_str
             integer :: i, key_index, value_index, n_args
             i = 0
             key_index = 0
@@ -48,13 +49,43 @@ module fortran_utils
             do i = 1, n_args
                 if (mod(i, 2) /= 0) then
                     key_index = key_index + 1
-                    keys(key_index) = input_args(i)
+                    key_str = input_args(i)
+                    if (key_str(1:2) /= "--") then
+                        print *, trim(key_str), " is not a valid key and must start with -- !"
+                        error stop
+                    end if
+                    keys(key_index) = trim(key_str)
                 else 
                     value_index = value_index + 1
-                    values(value_index) = input_args(i)
+                    values(value_index) = trim(input_args(i))
                 end if
             end do
         end subroutine
+
+
+        ! subroutine parse_args(keys, values, expected_keys, expected_types)
+
+        !     character(len=32), allocatable :: input_args(:)
+        !     character(len=32), allocatable, intent(out) :: keys(:), values(:)
+        !     character(len=32) :: expected_types(:), expected_keys(:)
+        !     integer :: i, n_expected_args
+            
+        !     if (size(expected_keys) /= size(expected_types)) then
+        !         error stop "number of expected keys does not match number of expected types"
+        !     end if
+        !     n_expected_args = size(expected_keys)
+
+        !     call get_command_line_arguments(input_args, n_expected_args)
+        !     call get_keys_and_values(input_args, keys, values)
+        !     if (.not. all(keys == expected_keys)) then
+        !         error stop "keys do not match expected keys"
+        !     end if
+
+        !     do i = 1, n_expected_args
+        !         if (expected_types[i] == "integer") then
+                    
+        !     end do
+        ! end subroutine
 
         subroutine parse_input_args(input_args, filepath, number)
             character(len=32), allocatable, intent(in) :: input_args(:)
@@ -93,13 +124,16 @@ module fortran_utils
             end do
         end subroutine print_args
 
-        subroutine get_command_line_arguments(args)
-            integer :: n_args
+        subroutine get_command_line_arguments(args, n_expected_args)
+            integer :: n_args, n_expected_args
             character(len=32) :: arg
             character(len=32), allocatable :: args(:)
             integer :: arg_index
 
             n_args = command_argument_count()
+            if (n_args /= n_expected_args) then
+                error stop "No arguments found!"
+            end if
             allocate(args(n_args))
             
             arg_index = 1
