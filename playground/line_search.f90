@@ -1,19 +1,23 @@
 program line_search
     implicit none
-    real, allocatable :: search_values(:)
+    real, allocatable :: vals(:)
     integer :: i
     real :: x, y
-    search_values = sequence(1.0, 1.5, 0.005)
-    do i = 1, size(search_values)
-        x = search_values(i)
-        y = x**2 - 2
-        if (abs(y) < 0.01) then
-            print *, "x=", x, "y=", y
-            stop
-        end if
-    end do
-
+    vals = sequence(1.0, 1.5, 0.005)
+    print *, do_line_search(vals)
     contains
+
+        real function do_line_search(search_values) result(x)
+            real, allocatable :: search_values(:)
+            do i = 1, size(search_values)
+                x = search_values(i)
+                y = x**2 - 2
+                if (abs(y) < 0.01) then
+                    exit                    
+                end if
+            end do
+        end function do_line_search
+
         function sequence(min, max, step_size) result(values)
             real :: min, max, step_size
             real, allocatable :: values(:)
