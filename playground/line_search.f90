@@ -1,14 +1,14 @@
 program line_search
     implicit none
     real, allocatable :: vals(:)
-    integer :: i
-    real :: x, y
     vals = sequence(1.0, 1.5, 0.005)
     print *, do_line_search(vals)
     contains
 
         real function do_line_search(search_values) result(x)
-            real, allocatable :: search_values(:)
+            real, intent(in), allocatable :: search_values(:)
+            integer :: i
+            real :: y
             do i = 1, size(search_values)
                 x = search_values(i)
                 y = x**2 - 2
