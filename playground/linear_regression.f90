@@ -4,48 +4,43 @@ program linear_regression_gd
     implicit none
     
     integer n, i
-    real :: x(100000)
-    real :: y(100000), predictions(100000), temp(100000)
-    real :: beta, alpha, beta_est, alpha_est, cost, rmse, mse, grad_alpha, grad_beta, learning_rate
-    real :: beta_diff, alpha_diff, threshold
+    real :: x(100000, 3)
+    real :: y(100000, 1), y_hat(100000, 1), residuals(100000, 1), predictions(100000, 1)
+    real :: coefs(3, 1), coefs_est(3, 1), diffs(3, 1), grads(3, 1)
+    real :: cost, rmse, mse, learning_rate, threshold
     
-    beta = 1.337
-    alpha = 0.420
+    coefs(1,1) = 1.337
+    coefs(2,1) = 2.3445
+    coefs(3,1) = 3.1415
+
     threshold = 0.0001
     n = size(x)
-    learning_rate = 0.5
-
-    call random_number(x)
-    y = alpha + beta * x
-
-    call random_number(beta_est)
-    call random_number(alpha_est)
-    
-    beta_diff = abs(beta - beta_est)
-    alpha_diff = abs(alpha - alpha_est)
-
-    do while (beta_diff > threshold .or. alpha_diff > threshold)
-        
-        temp = alpha_est + beta_est * x - y
-        cost = (1.0 / 2 * n) * sum(temp**2)
-        
-        grad_alpha = (1.0 / n) * sum(temp)
-        grad_beta = (1.0 / n) * sum(temp * x)
-        
-        alpha_est = alpha_est - learning_rate * grad_alpha
-        beta_est = beta_est - learning_rate * grad_beta
-        
-        beta_diff = abs(beta - beta_est)
-        alpha_diff = abs(alpha - alpha_est)
-        i = i + 1
-
-        print *, "iteration = ", i, "cost = ", cost, "alpha = ", alpha_est, "beta = ", beta_est
+    learning_rate = 0.05
+    i = 0
+    do i = 1, n
+        x(i, 1) = 1.0
+        x(i, 2) = rand()
+        x(i, 3) = rand()
     end do
-    predictions = alpha_est + beta_est * x
-    
+
+    call random_number(coefs_est)    
+    diffs = abs(coefs_est - coefs)
+    i = 0
+    print *, "coefs_est=", coefs_est
+    do while (any(diffs > 0))
+        y_hat = matmul(x, coefs_est)
+        residuals = y - y_hat
+        cost = sum(residuals**2)
+        grads = -2 * matmul(transpose(x), residuals)
+        coefs_est = coefs_est - learning_rate * grads
+        diffs = abs(coefs - coefs_est)
+        i = i + 1
+        print *, "iteration=", i, "gradients=", grads, "cost=", cost, "coefs_est=", coefs_est
+    end do
+
+    predictions = matmul(x, coefs_est)
     mse = sum(predictions - y)**2 / n
     rmse = sqrt(mse)
-
     print *,"RMSE = ", rmse, "MSE = ", mse
 
 end program
