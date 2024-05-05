@@ -3,9 +3,12 @@ program sampling_procedures
     implicit none
     integer :: x(10)
     integer, allocatable :: x_unique(:)
+
     
-    x = random_array(1, 10, 10)
-    call bubble_sort(x)
+    x = random_array(4, 18, 10)
     call print_array(x)
-    print *, unique_ints(x)
+    x_unique = unique_ints(x)
+
+    call bubble_sort(x_unique)
+    call print_array(x_unique)
 end program

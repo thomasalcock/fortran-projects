@@ -127,21 +127,22 @@ module sample_utils
         function unique_ints(array_of_ints) result(unique_values)
             integer :: array_of_ints(:)
             integer, allocatable :: unique_values(:)
-            integer :: i, n_unique_elements, unique_count
+            integer :: i, n_unique_elements, unique_count, current, next
 
             n_unique_elements = count_unique_ints(array_of_ints)
-            call bubble_sort_integer_array(array_of_ints)
             allocate(unique_values(n_unique_elements))
             
             unique_count = 1
             unique_values(1) = array_of_ints(1)
 
             do i = 2, size(array_of_ints)
-                if (array_of_ints(i) /= unique_values(i-1)) then
+                current = unique_values(unique_count)
+                next = array_of_ints(i)
+                if (next /= current) then
                     unique_count = unique_count + 1
                     unique_values(unique_count) = array_of_ints(i)
                 end if
-            end do
+            end do            
         end function unique_ints
         
 
