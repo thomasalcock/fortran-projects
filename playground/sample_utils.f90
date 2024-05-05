@@ -1,6 +1,10 @@
 module sample_utils
 
-    public :: print_array, random_array, random_number, bsort
+    implicit none
+
+    public :: print_array, random_array, &
+        random_number, bubble_sort, unique_ints, &
+        count_unique_ints
 
     interface print_array
         module procedure :: print_int_array
@@ -21,6 +25,10 @@ module sample_utils
         module procedure :: bubble_sort_real_array
         module procedure :: bubble_sort_integer_array
     end interface
+
+    ! interface unique_values
+    !     module procedure :: unique_ints
+    ! end interface
 
     contains
         integer function random_int(min, max) result(an_int)
@@ -104,20 +112,38 @@ module sample_utils
             end do
         end subroutine bubble_sort_real_array
 
-        ! pure function unique_ints(array_of_ints) result(unique_values)
-        !     integer, allocatable, intent(in) :: array_of_ints(:)
-        !     integer, allocatable :: unique_values(:)
-        !     integer :: i
-        !     allocate(unique_values(size(array_of_ints)))
-        !     unique_values(1) = array_of_ints(1)
-        !     do i = 2, size(array_of_ints)
-        !         if (array_of_ints(i) /= unique_values(i-1)) then
-        !             unique_values(i) = array_of_ints(i)
-        !         else
-        !             print *, "found duplicate: ", array_of_ints(i)
-        !         end if
-        !     end do
-        ! end function unique_ints
+        function count_unique_ints(array_of_ints) result(count)
+            integer :: array_of_ints(:)
+            integer :: i, count
+            count = 1
+            call bubble_sort_integer_array(array_of_ints)
+            do i = 2, size(array_of_ints)
+                if (array_of_ints(i-1) /= array_of_ints(i)) then
+                    count = count + 1
+                end if
+            end do
+        end function count_unique_ints
 
+        function unique_ints(array_of_ints) result(unique_values)
+            integer :: array_of_ints(:)
+            integer, allocatable :: unique_values(:)
+            integer :: i, n_unique_elements, unique_count
 
+            n_unique_elements = count_unique_ints(array_of_ints)
+            call bubble_sort_integer_array(array_of_ints)
+            allocate(unique_values(n_unique_elements))
+            
+            unique_count = 1
+            unique_values(1) = array_of_ints(1)
+
+            do i = 2, size(array_of_ints)
+                if (array_of_ints(i) /= unique_values(i-1)) then
+                    unique_count = unique_count + 1
+                    unique_values(unique_count) = array_of_ints(i)
+                end if
+            end do
+        end function unique_ints
+        
+
+        
 end module
