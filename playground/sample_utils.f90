@@ -26,9 +26,15 @@ module sample_utils
         module procedure :: bubble_sort_integer_array
     end interface
 
-    ! interface unique_values
-    !     module procedure :: unique_ints
-    ! end interface
+    interface unique
+        module procedure :: unique_ints
+        module procedure :: unique_reals
+    end interface
+
+    interface count_unique
+        module procedure :: count_unique_ints
+        module procedure :: count_unique_reals
+    end interface
 
     contains
         integer function random_int(min, max) result(an_int)
@@ -124,12 +130,24 @@ module sample_utils
             end do
         end function count_unique_ints
 
+        function count_unique_reals(array_of_reals) result(count)
+            real :: array_of_reals(:)
+            integer :: i, count
+            count = 1
+            call bubble_sort_real_array(array_of_reals)
+            do i = 2, size(array_of_reals)
+                if (array_of_reals(i-1) /= array_of_reals(i)) then
+                    count = count + 1
+                end if
+            end do
+        end function count_unique_reals
+
         function unique_ints(array_of_ints) result(unique_values)
             integer :: array_of_ints(:)
             integer, allocatable :: unique_values(:)
             integer :: i, n_unique_elements, unique_count, current, next
 
-            n_unique_elements = count_unique_ints(array_of_ints)
+            n_unique_elements = count_unique(array_of_ints)
             allocate(unique_values(n_unique_elements))
             
             unique_count = 1
@@ -142,9 +160,32 @@ module sample_utils
                     unique_count = unique_count + 1
                     unique_values(unique_count) = array_of_ints(i)
                 end if
-            end do            
+            end do
+            call bubble_sort(unique_values)
         end function unique_ints
         
 
+        function unique_reals(array_of_reals) result(unique_values)
+            real :: array_of_reals(:)
+            real, allocatable :: unique_values(:)
+            integer :: i, n_unique_elements, unique_count
+            real :: current, next
+
+            n_unique_elements = count_unique(array_of_reals)
+            allocate(unique_values(n_unique_elements))
+            
+            unique_count = 1
+            unique_values(1) = array_of_reals(1)
+
+            do i = 2, size(array_of_reals)
+                current = unique_values(unique_count)
+                next = array_of_reals(i)
+                if (next /= current) then
+                    unique_count = unique_count + 1
+                    unique_values(unique_count) = array_of_reals(i)
+                end if
+            end do
+            call bubble_sort(unique_values)
+        end function unique_reals
         
 end module
